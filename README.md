@@ -4,116 +4,66 @@
 * **Classes:** a brief rundown of each class involved
 * **Design Patterns:** a discussion of the design pattern used
 * **Config File:** the options present in the config file
-* **Style:** the styleguide used.
 
 ## Extensions
-The first extension present is pause functionality. Pressing the Tab
-key will prevent the game from playing and will display a relevant overlay.
-This details how to quit (Esc) and unpause (Tab).
+The first extension allows the player to double jump by pressing spacebar
+again while in the air.
 
-The second and significantly larger extension is the presence of
-randomly placed eye-candy as part of the background. These are broken into
-2 main categories: air and ground. The ground objects are the most simple,
-having a constant y position amongst them and moving at the same speed
-as the background. Their placements are constantly being randomly generated
-so as to keep it interesting. The air objects operate the same way but
-move twice as fast and have a random y position (changing every occurance)
-near the top of the screen. Their positions and the textures used are
-configurable via the config file. Adding a new texture to either list
-will make it appear as part of the rotation with no extra work or
-recompilation required.
+The second, considrably larger extension sometimes makes an obstacle more
+powerful/harder to pass. For the given obstacles, there is a 20% chance that it
+gains an aura, which basically makes the obstacle larger. There is also a 20% chance
+that the obstacle moves up and down on the Y axis. Finally, there is a 10% chance
+that both of these "powers" are given to the obstacle, creating a much bigger
+moving obstacle.
 
 ## Structure
-The structure of the code base has been broken down into a couple of key
-components. The Dialog class operates as the game manager, existing at the
-very top level, containing references to everything else and propogating
-things like painting events. Below it is the Player class which
-deals with things related to our stickman, albeit very limited
-at this stage. Alongside this is the world manager class which handles
-the objects that exist in our world. This has a factory to produce our
-world objects (background tiles or eyecandy) as well as a list of the ones
-produced. It handles the updates to all of these at every frame.
+The structure of the initial stage 1 code is maintained, with a world manager that
+handles all the world objects. The functionality of the previous stage is also preserved,
+and can be run in the config file. Now, it also handles the updating of the obstacles,
+adding and removing them whenever necessary, i.e. when the last placed obstacle
+has passed the distance specified by the config file, or when the obstacle leaves
+the screen.
 
-There is an interesting feature of the Factory present. The sprites used to create
-our world objects are reused via pointers to prevent creating a unique instance for
-each. As such, they have to be persisted throughout the lifetime of the program
-exterior to the world objects themselves. This is done via the factory that produces
-them - it exists as a member of the WorldManager and its lifetime is tied to the
-WorldManager which is in turn tied to Dialog and thus the whole application.
-This is a little bit weird as typically the produced objects should be independant
-once spawned. The alternative, however, is to duplicate resources by giving a unique
-texture to each which is not desirable OR to create an auxilary class to store these
-sprites. This would operate in the exact same way and would have the same lifetime
-issues and strange dependencies while also further convoluting the design. As such,
-neither of these options are any better and thus not pursued.
+There is now an obstacle object which implements the world object interface. The
+obstacles are created through the existing object factory created by the original code.
+These are then added to the world objects container in the world manager accordingly.
+Collision is checked for in every frame by drawing two rectangles to create
+hitboxes of the player and the obstacles respectively. The QRect intersects() function
+is then used on both hitboxes to check if the player hitbox has intersected an
+obstacle hitbox, prompting the game to stop.
 
 ## Classes
-There are a lot of classes present so this details quickly the purpose behind each.
+Apart from the classes highlighted in the first README, here are the ones added in stage 2:
 
-* **Background:** Implement WorldObject as a background panel
-* **Config:** Read and store the info present in the config file
-* **Dialog:** Game manager to handle high level events
-* **Eyecandy:** Implement WorldObject as an eyecandy instance (air or ground)
-* **Player:** Handle everthing related to the stickman
-* **Position:** Store the position and dimensions of an object
-* **WorldManager:** Handle events on a lower level, maintaining all world objects
-* **WorldObject:** Abstract class for objects in our world
-* **WorldObjectFactory:** Create different types of world objects
+* **Obstacle:** Implements WorldObject. Obstacles for the game.
+* **Decorator:** Interface for the decorators.
+* **AuraDecorator:** Decorator that increases the size of the obstacle.
+* **MoveDecorator:** Decorator that prompts the obstacle to move up and down.
 
 There is also a header.h file which contains a few basic #defines to prevent
 the presence of magic numbers throughout the code.
 
 ## Design Patterns
-The only pattern currently present is a Factory Method to create the
-different types of WorldObject instances. The Background and Eyecandy classes
-implement the pure virtual functions of the WorldObject abstract class.
-The WorldObjectFactory then has a method which takes an enum and an additional
-parameter, creating and returning the relevant WorldObject implementation.
-This simplifies the creation and management of these objects which currently
-make up the vast majority of components.
-
-No creational pattern is used for the other main classes: WorldManager and Player.
-Both have lifetimes tied to the application and very simple construction.
-There is therefore nothing to be gained and using a creational design pattern
-would generally only serve to complicate things. The other helper classes,
-Position and Config, also do not have a construction patterns for similar reasons -
-they are sufficiently simple and/or once-off that using a pattern would only
-serve to complicate the process of using them.
+The only additional design pattern added is the Decorator structural design pattern.
+This is used to augment the obstacles, adding interesting enhancements to them
+that make them harder to pass.
 
 ## Config Options
-The config file contains a large number of different tunable parameters which
-are detailed below:
+In addition to the initial config options, here are the ones added in stage 2:
+
+* **stage:** Initialises appropriate stage behaviour
+* **testMode:** True/False - enables testing mode
+* **gravity:** The gravity of the player, i.e. when jumping
+* **jumpVelocity:** The upwards velocity when jumping
+* **obstacleSizeX:** The width of the obstacles
+* **obstacleSizeY:** The height of the obstacles
+* **obstacleDistance:** The distance between obstacles
+* **obstacleVelocity:** The speed at which an augmented obstacle goes up and down
+* **obstacleEdgeDistance:** The distance from the edges the obstacle should stop at
+						 *  when moving up and down
+* **obstacleTextures:** The texture selection for obstacles, i.e. colour
+* **obstacleSequence:** The sequence of Y values to place the obstacles at
 
 
-* **size:** The size of the player ("tiny", "normal", "large", "huge")
-* **initX:** The initial x position of the player
-* **initY:**  The initial y position of the player
-* **velocity:**  The velocity of the player
-* **backgroundTexture:** The texture used for the background
-* **playerTexture:** The texture used for the player
-* **pauseTexture:** The texture used for the pause overlay
-* **airCandyTextures:** A list of textures for the air eyecandy objects
-* **groundCandyTextures:** A list of textures for the ground eyecandy objects
-* **airCandyPosition:** The min y position of the air eyecandy
-* **groundCandyPosition:** The y position of the ground eyecandy
-
-All textures are given as paths to the relevant file. These are relative to the
-executable itself in the build folder. A default set are included and will
-be automatically copied into the build folder when the project is built.
-
-## Style
-The styleguide for this project follows the
-[google C++ style guide](https://google.github.io/styleguide/cppguide.html),
-with the following changes and/or highlighted features:
-
-* Soft tabs of size 4
-* Opening brace never on its own line - should be at the end of the line that caused it
-* Closing brace on its own line
-* Braces should NOT be used for control expressions containing only a single line
-* Functions and control expressions should be on a single line when the
-  content is short (e.g. getter functions, `else return false`, etc.)
-* Camelcase naming - Capitalised first letter for classes, lowercase for variables
-* Typically every block of code (generally max ~8 lines unless very repetitive), block of
-  declaractions (in header file) or function implementation should have a brief comment explaining it
-* No code should be in header files - put it all in the relevant .cpp file
-* Single line whitespace should be used extensively to distinguish between sections
+The remaining unexplained options are simply alternate textures to give the game a different
+look in feel for stage 2.
