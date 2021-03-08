@@ -1,0 +1,55 @@
+{
+  "size": "normal",
+  "initX": 100,
+  "initY": 100,
+  "velocity": 4,
+  "backgroundTexture": "resources/textures/background.png",
+  "playerTexture": "resources/textures/player.png",
+  "pauseTexture": "resources/textures/pause.png",
+  "airCandyTextures": [
+      "resources/textures/airCandy0.png"
+  ],
+  "groundCandyTextures": [
+      "resources/textures/groundCandy0.png",
+      "resources/textures/groundCandy1.png",
+      "resources/textures/groundCandy2.png"
+  ],
+  "airCandyPosition": 540,
+  "groundCandyPosition": 100,
+  "stage": 2,
+  "testMode": false,
+  "gravity": -10,
+  "jumpVelocity": 10,
+  "obstacleSizeX": 100,
+  "obstacleSizeY": 100,
+  "obstacleDistance": 500,
+  "obstacleVelocity": 4,
+  "obstacleEdgeDistance": 100,
+  "gameOverTexture": "resources/textures/gameOver.png",
+  "auraTexture": "resources/textures/decorator0.png",
+  "moveTexture": "resrouces/textures/decorator1.png",
+  "backgroundTextureAlt": "resources/textures/backgroundAlt.png",
+  "pauseTextureAlt": "resources/textures/pauseAlt.png",
+  "playerTextureAlt": "resources/textures/playerAlt.png",
+  "obstacleTextures": [
+      "resources/textures/obstacle0.png",
+	  "resources/textures/obstacle1.png",
+	  "resources/textures/obstacle2.png"
+  ],
+  "obstacleSequence": [
+      200,
+	  600,
+	  200,
+	  300,
+	  200,
+	  500
+  ],
+  "airCandyAlt": [
+      "resources/textures/airCandyAlt0.png"
+  ],
+  "groundCandyAlt": [
+      "resources/textures/groundCandyAlt0.png",
+	  "resources/textures/groundCandyAlt1.png",
+	  "resources/textures/groundCandyAlt2.png"
+  ]
+}
