@@ -5,6 +5,11 @@
 * **Design Patterns:** a discussion of the design pattern used
 * **Config File:** the options present in the config file
 
+## What I Learned
+- Working and extending existing code bases
+- Using design patterns to add new functionalities to already existing code
+- Among other things!
+
 ## Extensions
 The first extension allows the player to double jump by pressing spacebar
 again while in the air.
